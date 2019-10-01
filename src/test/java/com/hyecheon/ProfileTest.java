@@ -3,6 +3,11 @@ package com.hyecheon;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -38,4 +43,18 @@ public class ProfileTest {
         assertTrue(matches);
     }
 
+    @Test
+    public void findsAnswersBasedOnPredicate() {
+        profile.add(new Answer(new BooleanQuestion(1, "1"), Bool.FALSE));
+        profile.add(new Answer(new PercentileQuestion(2, "2", new String[]{}), 0));
+        profile.add(new Answer(new PercentileQuestion(3, "3", new String[]{}), 0));
+
+        final List<Answer> answers = profile.find(a -> a.getQuestion().getClass() == PercentileQuestion.class);
+
+        assertThat(ids(answers), equalTo(new int[]{2, 3}));
+    }
+
+    private int[] ids(Collection<Answer> answers) {
+        return answers.stream().mapToInt(a -> a.getQuestion().getId()).toArray();
+    }
 }

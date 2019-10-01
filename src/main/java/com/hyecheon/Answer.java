@@ -35,4 +35,9 @@ public class Answer {
     public Question getCharacteristic() {
         return question;
     }
+
+    public Question getQuestion() {
+        return question;
+    }
+
 }
