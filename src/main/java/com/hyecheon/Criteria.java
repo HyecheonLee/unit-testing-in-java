@@ -1,22 +1,26 @@
 package com.hyecheon;
 
-import java.util.Iterator;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Criteria implements Iterable<Criterion> {
+    private List<Criterion> criteria = new ArrayList<>();
+
+    public void add(Criterion criterion) {
+        criteria.add(criterion);
+    }
+
     @Override
     public Iterator<Criterion> iterator() {
-        return null;
+        return criteria.iterator();
     }
 
-    @Override
-    public void forEach(Consumer<? super Criterion> consumer) {
-
+    public int arithmeticMean() {
+        return 0;
     }
 
-    @Override
-    public Spliterator<Criterion> spliterator() {
-        return null;
+    public double geometricMean(int[] numbers) {
+        int totalProduct = Arrays.stream(numbers).reduce(1, (product, number) -> product * number);
+        return Math.pow(totalProduct, 1.0 / numbers.length);
     }
 }

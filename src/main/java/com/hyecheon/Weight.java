@@ -1,9 +1,19 @@
 package com.hyecheon;
 
 public enum Weight {
-    DontCare, MustMatch;
+    MustMatch(Integer.MAX_VALUE),
+    VeryImportant(5000),
+    Important(1000),
+    WouldPrefer(100),
+    DontCare(0);
+
+    private int value;
+
+    Weight(int value) {
+        this.value = value;
+    }
 
     public int getValue() {
-        return 0;
+        return value;
     }
 }
