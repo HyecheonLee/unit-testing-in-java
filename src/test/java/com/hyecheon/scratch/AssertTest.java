@@ -2,8 +2,13 @@ package com.hyecheon.scratch;
 
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -159,5 +164,25 @@ public class AssertTest {
         } catch (InsufficientFundsException expected) {
             assertThat(expected.getMessage(), equalTo("balance only 0"));
         }
+    }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
+    public void exceptionRule() {
+        thrown.expect(InsufficientFundsException.class);
+        thrown.expectMessage("balance only 0");
+
+        account.withdraw(100);
+    }
+
+    @Test
+    public void readsFromTestFile() throws IOException {
+        final String filename = "test.txt";
+
+        final BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+        writer.write("test data");
+        writer.close();
     }
 }
