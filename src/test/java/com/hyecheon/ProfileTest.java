@@ -1,35 +1,41 @@
 package com.hyecheon;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ProfileTest {
+    private Profile profile;
+    private BooleanQuestion question;
+    private Criteria criteria;
+
+    @Before
+    public void setUp() throws Exception {
+        profile = new Profile("Bull Hockey, Inc.");
+        question = new BooleanQuestion(1, "Got bonuses?");
+        criteria = new Criteria();
+    }
+
     @Test
     public void matchAnswersFalseWhenMustMatchCriteriaNotMet() {
-        final Profile profile = new Profile("Bull Hockey, Inc.");
-        final Question question = new BooleanQuestion(1, "Got bonuses?");
-        final Answer profileAnswer = new Answer(question, Bool.FALSE);
-        profile.add(profileAnswer);
-        final Criteria criteria = new Criteria();
-        final Answer criteriaAnswer = new Answer(question, Bool.TRUE);
-        final Criterion criterion = new Criterion(criteriaAnswer, Weight.MustMatch);
-        criteria.add(criterion);
+        profile.add(new Answer(question, Bool.FALSE));
+        criteria.add(new Criterion(new Answer(question, Bool.TRUE), Weight.MustMatch));
+
         final boolean matches = profile.matches(criteria);
+
         assertFalse(matches);
     }
 
     @Test
     public void matchAnswersTrueForAnyDontCareCriteria() {
-        final Profile profile = new Profile("Bull Hockey, Inc.");
-        final Question question = new BooleanQuestion(1, "Got bonuses?");
-        final Answer profileAnswer = new Answer(question, Bool.FALSE);
-        profile.add(profileAnswer);
-        final Criteria criteria = new Criteria();
-        final Answer criteriaAnswer = new Answer(question, Bool.TRUE);
-        final Criterion criterion = new Criterion(criteriaAnswer, Weight.DontCare);
-        criteria.add(criterion);
+        profile.add(new Answer(question, Bool.FALSE));
+        criteria.add(new Criterion(new Answer(question, Bool.TRUE), Weight.DontCare));
+
         final boolean matches = profile.matches(criteria);
-        assertFalse(matches);
+
+        assertTrue(matches);
     }
+
 }
