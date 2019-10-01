@@ -12,6 +12,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AssertTest {
 
@@ -143,5 +144,20 @@ public class AssertTest {
     public void testWithWorthlessAssertionComment() {
         account.deposit(50);
         assertThat("account balance is 100", account.getBalance(), equalTo(50));
+    }
+
+    @Test(expected = InsufficientFundsException.class)
+    public void throwsWhenWithdrawingTooMuch() {
+        account.withdraw(100);
+    }
+
+    @Test
+    public void throwsWhenWithdrawingTooMuchTry() {
+        try {
+            account.withdraw(1000);
+            fail();
+        } catch (InsufficientFundsException expected) {
+            assertThat(expected.getMessage(), equalTo("balance only 0"));
+        }
     }
 }
