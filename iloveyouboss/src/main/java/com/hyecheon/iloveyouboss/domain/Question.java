@@ -1,6 +1,7 @@
 package com.hyecheon.iloveyouboss.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@NoArgsConstructor
 public abstract class Question implements Serializable, Persistable {
     private static final long serialVersionUID = 1L;
 
@@ -28,6 +29,10 @@ public abstract class Question implements Serializable, Persistable {
 
     abstract public boolean match(int expected, int actual);
 
+
+    public Question(String text) {
+        this.text = text;
+    }
 
     public boolean match(Answer answer) {
         return false;
