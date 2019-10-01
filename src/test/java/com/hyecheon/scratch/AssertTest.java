@@ -1,12 +1,16 @@
 package com.hyecheon.scratch;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class AssertTest {
@@ -82,5 +86,56 @@ public class AssertTest {
         final int initialBalance = account.getBalance();
         account.deposit(100);
         assertTrue(account.getBalance() > initialBalance);
+        assertThat(account.getBalance(), equalTo(100));
+    }
+
+    @Test
+    public void depositIncreasesBalance_hamcrestAssertTrue() {
+        account.deposit(50);
+        assertThat(account.getBalance() > 0, is(true));
+    }
+
+    @Ignore
+    @ExpectToFail
+    @Test
+    public void comparesArraysFailing() {
+        assertThat(new String[]{"a", "b", "c"}, equalTo(new String[]{"a", "b"}));
+    }
+
+    @Test
+    public void comparesArraysPassing() {
+        assertThat(new String[]{"a", "b"}, equalTo(new String[]{"a", "b"}));
+    }
+
+    @Test
+    public void comparesCollectionsPassing() {
+        assertThat(Arrays.asList(new String[]{"a"}), equalTo(Arrays.asList(new String[]{"a"})));
+    }
+
+    @Ignore
+    @ExpectToFail
+    @Test
+    public void matchesFailure() {
+        assertThat(account.getName(), startsWith("xyz"));
+    }
+
+    @Test
+    public void variousMatcherTests() {
+        final Account account = new Account("my big fat acct");
+        assertThat(account.getName(), is(equalTo("my big fat acct")));
+
+        assertThat(account.getName(), allOf(startsWith("my"), endsWith("acct")));
+
+        assertThat(account.getName(), anyOf(startsWith("my"), endsWith("loot")));
+
+        assertThat(account.getName(), not(equalTo("plunderings")));
+
+        assertThat(account.getName(), is(not(nullValue())));
+        assertThat(account.getName(), is(notNullValue()));
+
+        assertThat(account.getName(), isA(String.class));
+
+        assertThat(account.getName(), is(notNullValue()));
+        assertThat(account.getName(), equalTo("my big fat acct"));
     }
 }
