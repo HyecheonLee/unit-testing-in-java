@@ -57,4 +57,25 @@ public class ProfileTest {
     private int[] ids(Collection<Answer> answers) {
         return answers.stream().mapToInt(a -> a.getQuestion().getId()).toArray();
     }
+
+    @Test
+    public void findAnswers() {
+        int dataSize = 5000;
+        for (int i = 0; i < dataSize; i++) {
+            profile.add(new Answer(new BooleanQuestion(i, String.valueOf(i)), Bool.FALSE));
+        }
+        profile.add(new Answer(new PercentileQuestion(dataSize, String.valueOf(dataSize), new String[]{}), 0));
+        int numberOfTimes = 1000;
+        long elapsedMs = run(numberOfTimes, () -> profile.find(a -> a.getQuestion().getClass() == PercentileQuestion.class));
+        assertTrue(elapsedMs < 1000);
+    }
+
+    private long run(int times, Runnable func) {
+        final long start = System.nanoTime();
+        for (int i = 0; i < times; i++) {
+            func.run();
+        }
+        final long stop = System.nanoTime();
+        return (stop - start) / 1000000;
+    }
 }
