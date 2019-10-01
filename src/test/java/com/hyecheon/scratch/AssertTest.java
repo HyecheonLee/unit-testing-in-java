@@ -138,4 +138,10 @@ public class AssertTest {
         assertThat(account.getName(), is(notNullValue()));
         assertThat(account.getName(), equalTo("my big fat acct"));
     }
+
+    @Test
+    public void testWithWorthlessAssertionComment() {
+        account.deposit(50);
+        assertThat("account balance is 100", account.getBalance(), equalTo(50));
+    }
 }
