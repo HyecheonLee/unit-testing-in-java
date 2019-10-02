@@ -6,12 +6,10 @@ import java.util.stream.StreamSupport;
 public class MatchSet {
     private Map<String, Answer> answers;
     private Criteria criteria;
-    private int score = 0;
 
     public MatchSet(Map<String, Answer> answers, Criteria criteria) {
         this.answers = answers;
         this.criteria = criteria;
-        calculateScore(criteria);
     }
 
     public boolean matches() {
@@ -36,17 +34,13 @@ public class MatchSet {
         return anyMatches;
     }
 
-    private void calculateScore(Criteria criteria) {
-        score = StreamSupport.stream(criteria.spliterator(), false)
-                .filter(criterion -> criterion.matches(answerMatching(criterion)))
-                .mapToInt(criterion -> criterion.getWeight().getValue()).sum();
-    }
-
     private Answer answerMatching(Criterion criterion) {
         return answers.get(criterion.getAnswer().getQuestionText());
     }
 
     public int getScore() {
-        return score;
+        return StreamSupport.stream(criteria.spliterator(), false)
+                .filter(criterion -> criterion.matches(answerMatching(criterion)))
+                .mapToInt(criterion -> criterion.getWeight().getValue()).sum();
     }
 }
