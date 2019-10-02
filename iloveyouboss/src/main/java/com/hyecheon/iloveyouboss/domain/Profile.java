@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class Profile {
 
-    private Map<String,Answer> answers = new HashMap<>();
+    private Map<String, Answer> answers = new HashMap<>();
     // ...
 
     private int score;
@@ -32,12 +32,10 @@ public class Profile {
 
         boolean kill = false;
         boolean anyMatches = false;
-        for (Criterion criterion: criteria) {
+        for (Criterion criterion : criteria) {
             Answer answer = answers.get(
                     criterion.getAnswer().getQuestionText());
-            boolean match =
-                    criterion.getWeight() == Weight.DontCare ||
-                            answer.match(criterion.getAnswer());
+            boolean match = matches(criterion, answer);
             if (!match && criterion.getWeight() == Weight.MustMatch) {
                 kill = true;
             }
@@ -52,13 +50,18 @@ public class Profile {
         return anyMatches;
     }
 
+    private boolean matches(Criterion criterion, Answer answer) {
+        return criterion.getWeight() == Weight.DontCare ||
+                answer.match(criterion.getAnswer());
+    }
+
     public int score() {
         return score;
     }
 
     public List<Answer> classicFind(Predicate<Answer> pred) {
         List<Answer> results = new ArrayList<Answer>();
-        for (Answer answer: answers.values())
+        for (Answer answer : answers.values())
             if (pred.test(answer))
                 results.add(answer);
         return results;
