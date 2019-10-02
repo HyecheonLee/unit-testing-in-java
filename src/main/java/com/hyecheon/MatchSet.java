@@ -1,13 +1,12 @@
 package com.hyecheon;
 
-import java.util.Map;
 import java.util.stream.StreamSupport;
 
 public class MatchSet {
-    private Map<String, Answer> answers;
+    private AnswerCollection answers;
     private Criteria criteria;
 
-    public MatchSet(Map<String, Answer> answers, Criteria criteria) {
+    public MatchSet(AnswerCollection answers, Criteria criteria) {
         this.answers = answers;
         this.criteria = criteria;
     }
@@ -22,25 +21,22 @@ public class MatchSet {
     private boolean desNotMeetAnyMustMatchCriterion(Criteria criteria) {
         return StreamSupport.stream(criteria.spliterator(), false)
                 .anyMatch(criterion ->
-                        !criterion.matches(answerMatching(criterion)) &&
+                        !criterion.matches(answers.answerMatching(criterion)) &&
                                 criterion.getWeight() == Weight.MustMatch);
     }
 
     private boolean anyMatches(Criteria criteria) {
         boolean anyMatches = false;
         for (Criterion criterion : criteria) {
-            anyMatches |= criterion.matches(answerMatching(criterion));
+            anyMatches |= criterion.matches(answers.answerMatching(criterion));
         }
         return anyMatches;
     }
 
-    private Answer answerMatching(Criterion criterion) {
-        return answers.get(criterion.getAnswer().getQuestionText());
-    }
 
     public int getScore() {
         return StreamSupport.stream(criteria.spliterator(), false)
-                .filter(criterion -> criterion.matches(answerMatching(criterion)))
+                .filter(criterion -> criterion.matches(answers.answerMatching(criterion)))
                 .mapToInt(criterion -> criterion.getWeight().getValue()).sum();
     }
 }
