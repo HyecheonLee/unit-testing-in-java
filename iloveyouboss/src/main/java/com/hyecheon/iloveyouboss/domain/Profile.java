@@ -6,13 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class Profile {
 
     private Map<String, Answer> answers = new HashMap<>();
-    // ...
 
     private int score;
     private String name;
@@ -30,45 +27,17 @@ public class Profile {
     }
 
     public boolean matches(Criteria criteria) {
-        calculateScore(criteria);
-        if (desNotMeetAnyMustMatchCriterion(criteria)) {
-            return false;
-        }
-        return anyMatches(criteria);
+        final MatchSet matchSet = new MatchSet(answers, criteria);
+        score = matchSet.getScore();
+        return matchSet.matches();
     }
-
-    private boolean desNotMeetAnyMustMatchCriterion(Criteria criteria) {
-        return StreamSupport.stream(criteria.spliterator(), false)
-                .anyMatch(criterion ->
-                        !criterion.matches(answerMatching(criterion)) &&
-                                criterion.getWeight() == Weight.MustMatch);
-    }
-
-    private void calculateScore(Criteria criteria) {
-        score = StreamSupport.stream(criteria.spliterator(), false)
-                .filter(criterion -> criterion.matches(answerMatching(criterion)))
-                .mapToInt(criterion -> criterion.getWeight().getValue()).sum();
-    }
-
-    private boolean anyMatches(Criteria criteria) {
-        boolean anyMatches = false;
-        for (Criterion criterion : criteria) {
-            anyMatches |= criterion.matches(answerMatching(criterion));
-        }
-        return anyMatches;
-    }
-
-    private Answer answerMatching(Criterion criterion) {
-        return answers.get(criterion.getAnswer().getQuestionText());
-    }
-
 
     public int score() {
         return score;
     }
 
     public List<Answer> classicFind(Predicate<Answer> pred) {
-        List<Answer> results = new ArrayList<Answer>();
+        List<Answer> results = new ArrayList<>();
         for (Answer answer : answers.values())
             if (pred.test(answer))
                 results.add(answer);
