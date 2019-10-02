@@ -10,9 +10,24 @@ public class Criterion implements Scoreable {
         this.weight = weight;
     }
 
-    public Answer getAnswer() { return answer; }
-    public Weight getWeight() { return weight; }
+    public Answer getAnswer() {
+        return answer;
+    }
 
-    public void setScore(int score) { this.score = score; }
-    public int getScore() { return score; }
+    public Weight getWeight() {
+        return weight;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public boolean matches(Answer answer) {
+        return getWeight() == Weight.DontCare ||
+                answer.match(getAnswer());
+    }
 }
