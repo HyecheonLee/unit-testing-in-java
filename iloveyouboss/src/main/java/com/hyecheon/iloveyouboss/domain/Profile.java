@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class Profile {
 
@@ -28,22 +30,24 @@ public class Profile {
     }
 
     public boolean matches(Criteria criteria) {
-        score = 0;
-
-        boolean kill = false;
-        for (Criterion criterion : criteria) {
-            boolean match = criterion.matches(answerMatching(criterion));
-            if (!match && criterion.getWeight() == Weight.MustMatch) {
-                kill = true;
-            }
-            if (match) {
-                score += criterion.getWeight().getValue();
-            }
-        }
-        if (kill)
+        calculateScore(criteria);
+        if (desNotMeetAnyMustMatchCriterion(criteria)) {
             return false;
-
+        }
         return anyMatches(criteria);
+    }
+
+    private boolean desNotMeetAnyMustMatchCriterion(Criteria criteria) {
+        return StreamSupport.stream(criteria.spliterator(), false)
+                .anyMatch(criterion ->
+                        !criterion.matches(answerMatching(criterion)) &&
+                                criterion.getWeight() == Weight.MustMatch);
+    }
+
+    private void calculateScore(Criteria criteria) {
+        score = StreamSupport.stream(criteria.spliterator(), false)
+                .filter(criterion -> criterion.matches(answerMatching(criterion)))
+                .mapToInt(criterion -> criterion.getWeight().getValue()).sum();
     }
 
     private boolean anyMatches(Criteria criteria) {
