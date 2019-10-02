@@ -28,7 +28,7 @@ public class ProfileTest {
         profile.add(new Answer(question, Bool.FALSE));
         criteria.add(new Criterion(new Answer(question, Bool.TRUE), Weight.MustMatch));
 
-        final boolean matches = profile.matches(criteria);
+        final boolean matches = profile.getMatchSet(criteria).matches();
 
         assertFalse(matches);
     }
@@ -38,7 +38,7 @@ public class ProfileTest {
         profile.add(new Answer(question, Bool.FALSE));
         criteria.add(new Criterion(new Answer(question, Bool.TRUE), Weight.DontCare));
 
-        final boolean matches = profile.matches(criteria);
+        final boolean matches = profile.getMatchSet(criteria).matches();
 
         assertTrue(matches);
     }

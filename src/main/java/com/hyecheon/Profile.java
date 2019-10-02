@@ -7,8 +7,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Profile {
+
     private Map<String, Answer> answers = new HashMap<>();
-    private int score;
     private String name;
 
     public Profile(String name) {
@@ -23,29 +23,13 @@ public class Profile {
         answers.put(answer.getQuestionText(), answer);
     }
 
-    public boolean matches(Criteria criteria) {
-        score = 0;
-        boolean kill = false;
-        boolean anyMatches = false;
-        for (Criterion criterion : criteria) {
-            final Answer answer = answers.get(criterion.getAnswer().getQuestionText());
-            final boolean match = criterion.getWeight() == Weight.DontCare || answer.match(criterion.getAnswer());
-            if (!match && criterion.getWeight() == Weight.MustMatch) {
-                kill = true;
-            }
-            if (match) {
-                score += criterion.getWeight().getValue();
-            }
-            anyMatches |= match;
-        }
-        if (kill) {
-            return false;
-        }
-        return anyMatches;
+    public MatchSet getMatchSet(Criteria criteria) {
+        return new MatchSet(answers, criteria);
     }
 
-    public int score() {
-        return score;
+    @Override
+    public String toString() {
+        return name;
     }
 
     public List<Answer> find(Predicate<Answer> pred) {
