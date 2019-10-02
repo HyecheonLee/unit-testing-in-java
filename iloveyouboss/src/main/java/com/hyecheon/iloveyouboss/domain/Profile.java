@@ -31,21 +31,26 @@ public class Profile {
         score = 0;
 
         boolean kill = false;
-        boolean anyMatches = false;
         for (Criterion criterion : criteria) {
-            Answer answer = answerMatching(criterion);
-            boolean match = criterion.matches(answer);
+            boolean match = criterion.matches(answerMatching(criterion));
             if (!match && criterion.getWeight() == Weight.MustMatch) {
                 kill = true;
             }
             if (match) {
                 score += criterion.getWeight().getValue();
             }
-            anyMatches |= match;
-            // ...
         }
         if (kill)
             return false;
+
+        return anyMatches(criteria);
+    }
+
+    private boolean anyMatches(Criteria criteria) {
+        boolean anyMatches = false;
+        for (Criterion criterion : criteria) {
+            anyMatches |= criterion.matches(answerMatching(criterion));
+        }
         return anyMatches;
     }
 
