@@ -41,24 +41,40 @@ public class SearchTest {
                 + "though the wit thereof he but dimly discerns, and more "
                 + "than suspects that the joke is at nobody's expense but "
                 + "his own.");
-        // search
         Search search = new Search(stream, "practical joke", A_TITLE);
-        Search.LOGGER.setLevel(Level.OFF);
         search.setSurroundingCharacterCount(10);
+
         search.execute();
-        assertFalse(search.errored());
+
         assertThat(search.getMatches(), containsMatches(new Match[]{
                 new Match(A_TITLE, "practical joke", "or a vast practical joke, though t")
         }));
     }
 
-    public void noMatchesReturnedWhenSearchStringNotInContent() throws IOException {
-        // negative
-        URLConnection connection = new URL("http://bit.ly/15sYPA7").openConnection();
-        stream = connection.getInputStream();
-        Search search = new Search(stream, "smelt", A_TITLE);
+    @Test
+    public void noMatchesReturnedWhenSearchStringNotInContent() {
+        stream = streamOn("any text");
+        Search search = new Search(stream, "text that doesn't match", A_TITLE);
+
         search.execute();
+
         assertTrue(search.getMatches().isEmpty());
+    }
+
+    @Test
+    public void returnsMatchesShowingContextWhenSearchStringInContent() {
+        stream = streamOn("rest of text here"
+                + "1234567890search term1234567890"
+                + "more rest of text");
+        final Search search = new Search(stream, "search term", A_TITLE);
+        search.setSurroundingCharacterCount(10);
+
+        search.execute();
+
+        assertThat(search.getMatches(), containsMatches(new Match[]
+                {new Match(A_TITLE,
+                        "search term",
+                        "1234567890search term1234567890")}));
     }
 
     private InputStream streamOn(String pageContent) {
