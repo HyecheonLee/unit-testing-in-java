@@ -65,7 +65,8 @@ public class MatchSetTest {
     }
 
     private MatchSet createMatchSet() {
-        return new MatchSet(answers, criteria);
+//        return new MatchSet(answers, criteria);
+        return null;
     }
 
     @Test
