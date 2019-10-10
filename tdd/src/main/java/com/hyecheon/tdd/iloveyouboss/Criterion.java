@@ -1,6 +1,19 @@
 package com.hyecheon.tdd.iloveyouboss;
 
 public class Criterion {
-    public Criterion(Answer answer, Weight important) {
+    private Answer answer;
+    private Weight weight;
+
+    public Criterion(Answer answer, Weight weight) {
+        this.answer = answer;
+        this.weight = weight;
+    }
+
+    public Answer getAnswer() {
+        return answer;
+    }
+
+    public Weight getWeight() {
+        return weight;
     }
 }

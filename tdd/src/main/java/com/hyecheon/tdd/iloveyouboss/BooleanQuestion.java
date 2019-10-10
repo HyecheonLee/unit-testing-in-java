@@ -1,6 +1,12 @@
 package com.hyecheon.tdd.iloveyouboss;
 
-public class BooleanQuestion implements Question {
-    public BooleanQuestion(int i, String s) {
+public class BooleanQuestion extends Question {
+    public BooleanQuestion(int id, String text) {
+        super(id, text, new String[]{"No", "Yes"});
+    }
+
+    @Override
+    public boolean match(int expected, int actual) {
+        return expected == actual;
     }
 }
