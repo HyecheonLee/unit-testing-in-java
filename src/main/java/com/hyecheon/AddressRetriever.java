@@ -1,6 +1,7 @@
 package com.hyecheon;
 
 import com.hyecheon.util.Http;
+import com.hyecheon.util.HttpImpl;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -8,10 +9,9 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
 public class AddressRetriever {
-    private Http http;
+    private Http http = new HttpImpl();
 
-    public AddressRetriever(Http http) {
-        this.http = http;
+    public AddressRetriever() {
     }
 
     public Address retrieve(double latitude, double longitude) throws ParseException, IOException {
