@@ -77,6 +77,35 @@ public class SearchTest {
                         "1234567890search term1234567890")}));
     }
 
+    @Test
+    public void returnsErroredWhenUnableToReadStream() {
+        stream = createStreamThrowingErrorWhenRead();
+        final Search search = new Search(stream, "", "");
+
+        search.execute();
+
+        assertTrue(search.errored());
+    }
+
+    @Test
+    public void erroredReturnsFalseWhenReadSucceeds() {
+        stream = streamOn("");
+        final Search search = new Search(stream, "", "");
+
+        search.execute();
+
+        assertFalse(search.errored());
+    }
+
+    private InputStream createStreamThrowingErrorWhenRead() {
+        return new InputStream() {
+            @Override
+            public int read() throws IOException {
+                throw new IOException();
+            }
+        };
+    }
+
     private InputStream streamOn(String pageContent) {
         return new ByteArrayInputStream(pageContent.getBytes());
     }
