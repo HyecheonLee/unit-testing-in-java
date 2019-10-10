@@ -38,15 +38,16 @@ public class SearchTest {
                 new Match(A_TITLE, "practical joke", "or a vast practical joke, though t")
         }));
         stream.close();
+    }
 
+    public void noMatchesReturnedWhenSearchStringNotInContent() throws IOException {
         // negative
         URLConnection connection = new URL("http://bit.ly/15sYPA7").openConnection();
         InputStream inputStream = connection.getInputStream();
-        search = new Search(inputStream, "smelt", A_TITLE);
+        Search search = new Search(inputStream, "smelt", A_TITLE);
         search.execute();
         assertTrue(search.getMatches().isEmpty());
-        stream.close();
-
+        inputStream.close();
     }
 
     private InputStream streamOn(String pageContent) {
